@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8085/realms/entusiastadev
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+
+
+# https://www.youtube.com/watch?v=vmEWywGzWbA&t=1892s
+# a partir de 44:15

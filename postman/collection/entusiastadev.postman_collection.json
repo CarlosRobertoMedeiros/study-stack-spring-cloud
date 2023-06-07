@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "4a5f6942-00de-4f16-8114-7067f9384b97",
+		"name": "entusiastadev",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01-keycloackconf",
+			"item": [
+				{
+					"name": "01-getAllOpenIDConnect",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlIds}}/realms/{{realm}}/.well-known/openid-configuration",
+							"host": [
+								"{{baseUrlIds}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								".well-known",
+								"openid-configuration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02-getUserInfo",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({ \r",
+									"    url: pm.environment.get(\"baseUrlIds\") + \"/oauth/v2/token\",\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Accept': 'application/json',\r",
+									"        'Content-Type': 'application/x-www-form-urlencoded'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'urlencoded',\r",
+									"        urlencoded: [\r",
+									"            {key: 'grant_type', value: 'password'},\r",
+									"            {key: 'client_id', value: 'entusiastadev-rest-api'},\r",
+									"            {key: 'username', value: 'entusiastadev'},\r",
+									"            {key: 'password', value: '123456'}\r",
+									"        ]\r",
+									"    }\r",
+									"},\r",
+									"    (err, res) => {\r",
+									"        pm.globals.set(\"access_token\", res.json().access_token)\r",
+									"        // or use pm.environment.set() instead when you want to store the token in the active environment\r",
+									"        // console.log(res.json());\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{baseUrlIds}}/realms/{{realm}}/protocol/openid-connect/userinfo",
+							"host": [
+								"{{baseUrlIds}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								"protocol",
+								"openid-connect",
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03-validarCertificado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"refresh_token\", jsonData.refresh_token);\r",
+									"postman.setEnvironmentVariable(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "entusiastadev-rest-api",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "entusiastadev",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlIds}}/realms/{{realm}}/protocol/openid-connect/certs",
+							"host": [
+								"{{baseUrlIds}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								"protocol",
+								"openid-connect",
+								"certs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04-getToken-passwordFlow",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.collectionVariables.set('access_token_password_flow', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "entusiastadev-rest-api",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "entusiastadev",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlIds}}/realms/{{realm}}/protocol/openid-connect/token",
+							"host": [
+								"{{baseUrlIds}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05-getIntrospectToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token_password_flow}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "{{access_token_password_flow}}",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "entusiastadev-rest-api",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "entusiastadev",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "default",
+									"disabled": true
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "default",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlIds}}/realms/{{realm}}/protocol/openid-connect/token/introspect",
+							"host": [
+								"{{baseUrlIds}}"
+							],
+							"path": [
+								"realms",
+								"{{realm}}",
+								"protocol",
+								"openid-connect",
+								"token",
+								"introspect"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02-testingservices",
+			"item": [
+				{
+					"name": "01-getHelloWorld",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{access_token_password_flow}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/api/v1/demo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"v1",
+								"demo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02-getHelloWorld-2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{access_token_password_flow}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/api/v1/demo/hello-2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"v1",
+								"demo",
+								"hello-2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrlIds",
+			"value": "http://localhost:8085",
+			"type": "default"
+		},
+		{
+			"key": "realm",
+			"value": "entusiastadev",
+			"type": "default"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "access_token_password_flow",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
