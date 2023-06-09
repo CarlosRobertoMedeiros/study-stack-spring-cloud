@@ -1,6 +1,12 @@
 server:
   port: 8081
 
+jwt:
+  auth:
+    converter:
+      resource-id: entusiastadev-rest-api
+      principle-attribute: preferred_username
+
 spring:
   security:
     oauth2:
