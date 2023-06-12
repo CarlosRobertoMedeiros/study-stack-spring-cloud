@@ -1,0 +1,9 @@
+server:
+  port: 8021
+  servlet:
+    context-path: /microservice--client-api
+
+spring:
+  profiles:
+    default: local
+    active: local
