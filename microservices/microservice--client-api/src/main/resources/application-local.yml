@@ -11,8 +11,8 @@ springdoc:
 
 
 
-logging:
-  level:
-    root: debug
+#logging:
+#  level:
+#    root: debug
 
 # https://www.youtube.com/watch?v=2o_3hjUPAfQ a partir desse vídeo
