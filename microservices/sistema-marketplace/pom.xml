@@ -22,6 +22,7 @@
 	</properties>
 
 	<modules>
+		<module>../microservice--cucumber-example</module>
 		<module>../microservice--client-api</module>
 	</modules>
 
